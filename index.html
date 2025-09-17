@@ -426,6 +426,26 @@
     min-height: 150px;
     resize: vertical;
   }
+  
+  .status-message {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    display: none;
+  }
+  
+  .success {
+    background: rgba(240, 255, 244, 0.2);
+    color: #68d391;
+    display: block;
+  }
+  
+  .error {
+    background: rgba(255, 245, 245, 0.2);
+    color: #fc8181;
+    display: block;
+  }
 
   /* Footer */
   footer { 
@@ -501,6 +521,10 @@
     
     .hero-buttons .btn {
       width: 200px;
+    }
+    
+    .contact-container {
+      flex-direction: column;
     }
   }
   
@@ -721,17 +745,30 @@
     
     <div class="contact-form">
       <h3>Send a Message</h3>
-      <form id="contactForm">
+      <!-- FormSubmit form - Replace YOUR_EMAIL with your actual email -->
+      <form action="https://formsubmit.co/moenssacha@gmail.com" method="POST">
+        <!-- Optional form inputs for customization -->
+        <input type="hidden" name="_subject" value="New message from your portfolio">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_next" value="#contact">
+        <input type="hidden" name="_captcha" value="false">
+        
         <div class="form-group">
-          <input type="text" class="form-input" placeholder="Your Name" required>
+          <input type="text" name="name" class="form-input" placeholder="Your Name" required>
         </div>
+        
         <div class="form-group">
-          <input type="email" class="form-input" placeholder="Your Email" required>
+          <input type="email" name="email" class="form-input" placeholder="Your Email" required>
         </div>
+        
         <div class="form-group">
-          <textarea class="form-input" placeholder="Your Message" required></textarea>
+          <textarea name="message" class="form-input" placeholder="Your Message" required></textarea>
         </div>
+        
         <button type="submit" class="btn">Send Message</button>
+        
+        <!-- Status message (initially hidden) -->
+        <div id="status-message" class="status-message"></div>
       </form>
     </div>
   </div>
@@ -782,14 +819,27 @@
     }
   });
   
-  // Simple form validation
-  const contactForm = document.getElementById('contactForm');
+  // Form status handling
+  const contactForm = document.querySelector('form');
+  const statusMessage = document.getElementById('status-message');
+  
   if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Thank you for your message! I will get back to you soon.');
-      contactForm.reset();
+    contactForm.addEventListener('submit', function() {
+      statusMessage.textContent = "Sending your message...";
+      statusMessage.className = "status-message";
+      statusMessage.style.display = "block";
     });
+  }
+  
+  // Check if there's a success parameter in the URL (for FormSubmit redirects)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('success')) {
+    statusMessage.textContent = "Message sent successfully!";
+    statusMessage.classList.add("success");
+    statusMessage.style.display = "block";
+    
+    // Scroll to contact section to show the success message
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
   }
 </script>
 </body>
